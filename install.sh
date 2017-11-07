@@ -5,27 +5,41 @@ SRC_DIR=./src
 
 ZIP_FILE=service.zip
 
+STACK_NAME=cfn-flip-service
+
+echo "Packaging code..."
+
 # Copy source
 mkdir -p $BUILD_DIR
 cp -a $SRC_DIR/* $BUILD_DIR/
-pip install -r $SRC_DIR/requirements.txt -t $BUILD_DIR
+pip install -r $SRC_DIR/requirements.txt -t $BUILD_DIR > /dev/null
 
 # Create the zip
 cd $BUILD_DIR
-zip -9 -r ../$ZIP_FILE ./
+zip -9 -r ../$ZIP_FILE ./ >/dev/null
 cd ..
 
 # Create a bucket
-bucket_name=cfn-flip-service-$(pwgen -A -0 8 1)
-aws s3 mb s3://$bucket_name
+bucket_name=${STACK_NAME}-$(pwgen -A -0 8 1)
+aws s3 mb s3://$bucket_name >/dev/null
+
+echo "Deploying application"
 
 # Do the sam deployment
-sam package --template-file template.yaml --s3-bucket $bucket_name --output-template-file template.out.yaml
-sam deploy --template-file template.out.yaml --stack-name cfn-flip-service --capabilities CAPABILITY_IAM
+sam package --template-file template.yaml --s3-bucket $bucket_name --output-template-file template.out.yaml >/dev/null
+sam deploy --template-file template.out.yaml --stack-name $STACK_NAME --capabilities CAPABILITY_IAM >/dev/null
 
 # Clean up
-aws s3 rm --recursive s3://$bucket_name
-aws s3 rb s3://$bucket_name
+aws s3 rm --recursive s3://$bucket_name >/dev/null
+aws s3 rb s3://$bucket_name >/dev/null
 rm $ZIP_FILE
 rm -r $BUILD_DIR
 rm template.out.yaml
+
+# Get the URL and test it
+url=$(aws cloudformation describe-stacks --stack-name $STACK_NAME | jq -r .Stacks[0].Outputs[0].OutputValue)
+
+curl -X POST -H "Content-Type: application/json" -d '{"API is": "working"}' $url
+
+echo
+echo "The API endpoint is: $url"

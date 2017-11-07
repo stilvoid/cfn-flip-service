@@ -24,7 +24,12 @@ cfn-flip-service uses [cfn-flip](https://github.com/awslabs/aws-cfn-template-fli
 
 ## Maintenance
 
-You will need [python 3](https://www.python.org/) and [pip](https://pypi.python.org/pypi/pip/) installed.
+You will need the following tools installed:
+
+* [aws cli](https://aws.amazon.com/cli/)
+* [jq](https://stedolan.github.io/jq/)
+* [pip](https://pypi.python.org/pypi/pip/)
+* [sam local](https://github.com/awslabs/aws-sam-local)
 
 Use the `install.sh` script to deploy or update the service.
 

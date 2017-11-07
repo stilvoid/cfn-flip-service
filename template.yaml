@@ -13,3 +13,7 @@ Resources:
           Properties:
             Path: /
             Method: post
+Outputs:
+  ApiUrl:
+    Description: Endpoint URL
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/

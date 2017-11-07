@@ -1,6 +1,6 @@
 # cfn-flip-service
 
-A serverless API that converts CloudFormation templates between JSON and YAML formats
+A serverless API that converts CloudFormation templates between JSON and YAML formats.
 
 cfn-flip-service uses [cfn-flip](https://github.com/awslabs/aws-cfn-template-flip/) and provides an API for it.
 

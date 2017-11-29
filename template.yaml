@@ -6,7 +6,7 @@ Resources:
     Properties:
       Handler: service.handler
       Runtime: python3.6
-      CodeUri: service.zip
+      CodeUri: package.zip
       Events:
         Api:
           Type: Api

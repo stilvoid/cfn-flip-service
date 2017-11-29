@@ -2,7 +2,7 @@
 
 set -e
 
-ZIP_FILE=service.zip
+ZIP_FILE=package.zip
 
 STACK_NAME=cfn-flip-service
 
@@ -13,17 +13,16 @@ fi
 
 echo "Packaging code..."
 
-./package.sh
+./package.sh $bucket
 
 echo "Deploying application"
 
 # Do the sam deployment
-sam package --template-file template.yaml --s3-bucket $bucket --output-template-file template.out.yaml >/dev/null
-sam deploy --template-file template.out.yaml --stack-name $STACK_NAME --capabilities CAPABILITY_IAM >/dev/null
+aws cloudformation deploy --template-file package.yaml --stack-name $STACK_NAME --capabilities CAPABILITY_IAM >/dev/null
 
 # Clean up
 rm $ZIP_FILE
-rm template.out.yaml
+rm package.yaml
 
 # Get the URL and test it
 url=$(aws cloudformation describe-stacks --stack-name $STACK_NAME | jq -r .Stacks[0].Outputs[0].OutputValue)
